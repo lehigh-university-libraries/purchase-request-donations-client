@@ -17,6 +17,10 @@
       font-weight: bold;
     }
 
+    hr {
+      margin: 20px 0;
+    }
+
     #environment div {
       display: inline-block;
     }
@@ -31,6 +35,13 @@
 <body>
   <div class="sidebar">
     <form name="inventoryInfo" id="inventoryInfo">
+
+      <div class="block form-group">
+        <label for="end_row">Note Template</label>
+        <input type="text" id="noteTemplate">
+      </div>
+
+      <hr/>
 
       <fieldset id="environment">
         <legend>Environment</legend>
@@ -67,6 +78,14 @@
 
 
     <script>
+      $("#noteTemplate").change(function(e) {
+        let noteTemplate = $("#noteTemplate").val();
+        google.script.run
+          .withSuccessHandler(() => { console.log("Set note template."); })
+          .withFailureHandler((error) => { console.log("Failed to set note template: " + error); })
+          .setNoteTemplate(noteTemplate);
+      });
+
       $("#environment input[type=radio]").click(function() {
         checkReadyToSubmit();
       });

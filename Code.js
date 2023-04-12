@@ -15,6 +15,40 @@ function showSidebar() {  // eslint-disable-line no-unused-vars
       .setWidth(500);
     SpreadsheetApp.getUi()
       .showSidebar(html);
+
+    watchEdits();
+}
+
+function setNoteTemplate(noteTemplate) {  // eslint-disable-line no-unused-vars
+    PropertiesService.getScriptProperties().setProperty("noteTemplate", noteTemplate);
+}
+
+function watchEdits() {
+    // Check if already installed
+    const triggers = ScriptApp.getProjectTriggers();
+    for (let i=0; i < triggers.length; i++) {
+        if (triggers[i].getHandlerFunction() == 'onEdit') {
+            console.log("Trigger already installed.")
+            return;
+        }
+    }
+
+    // Install trigger
+    ScriptApp.newTrigger('onEdit')
+        .forSpreadsheet(SpreadsheetApp.getActive())
+        .onEdit()
+        .create();
+    console.log("Trigger installed.")
+}
+
+function onEdit(e) {  // eslint-disable-line no-unused-vars
+    let row = e.range.getRow();
+    let noteCell = e.source.getRange(NOTE_COLUMN + row);
+
+    let noteTemplate = PropertiesService.getScriptProperties().getProperty("noteTemplate");
+    if (noteTemplate != null && noteTemplate.length > 0) {
+        noteCell.setValue(noteTemplate);
+    }
 }
 
 function testProcessSheet() {  // eslint-disable-line no-unused-vars
