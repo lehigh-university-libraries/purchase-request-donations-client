@@ -52,6 +52,9 @@ function setHeaders(config) {
     config.headers = {
         "Authorization": "Basic " + Utilities.base64Encode(username + ":" + password)
     };
+
+    let email = Session.getActiveUser().getEmail();
+    config.username = email.substring(0, email.indexOf('@'));
 }
 
 function submitRequest(config, isbn, note) {
@@ -60,7 +63,9 @@ function submitRequest(config, isbn, note) {
 
     let purchaseRequest = {
         'isbn': isbn,
-        'requesterComments': note
+        'requesterComments': note,
+        'reporterName': config.username,
+        'requestType': 'Suggestion'
     };
     let options = {
         'method': 'post',
